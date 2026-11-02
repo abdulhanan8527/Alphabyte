@@ -1,26 +1,201 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Alphabyte dark design system — charcoal canvas, green primary, burgundy energy accent */
+@theme {
+  /* Brand colors */
+  --color-brand: #16851d;
+  --color-brand-dark: #0f6b16;
+  --color-brand-light: #eaf6eb;
+  --color-burgundy: #a30d50;
+  --color-burgundy-dark: #820a40;
+  --color-burgundy-light: #fdeef4;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Dark canvas */
+  --color-night: #0e1011;
+  --color-night-soft: #141718;
+  --color-charcoal: #17191b;
+  --color-charcoal-soft: #212427;
+  --color-charcoal-line: #2e3236;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Text on dark */
+  --color-ink: #0e1011;
+  --color-mist: #9ca3af;
+  --color-fog: #6b7280;
+  --color-hairline: rgb(255 255 255 / 0.08);
+
+  /* Legacy aliases (kept so utilities still resolve) */
+  --color-muted: #9ca3af;
+  --color-surface: #141718;
+  --color-line: rgb(255 255 255 / 0.08);
+
+  /* Typography */
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-inter: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+
+  /* Elevation on dark */
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 32px -16px rgb(0 0 0 / 0.5);
+  --shadow-lift: 0 10px 30px rgb(163 13 80 / 0.12), 0 4px 12px rgb(0 0 0 / 0.4);
+  --shadow-glow: 0 4px 18px rgb(22 133 29 / 0.35);
+
+  /* Motion */
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-marquee-slow: marquee 80s linear infinite;
+  --animate-pulse-ring: pulse-ring 2.5s ease-out infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1.7);
+      opacity: 0;
+    }
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-night font-sans text-mist antialiased;
+}
+
+::selection {
+  background: var(--color-brand);
+  color: #fff;
+}
+
+/* Accessible focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* Fixed film-grain overlay */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Glass card surface used across dark sections */
+.glass {
+  background: rgb(255 255 255 / 0.04);
+  border: 1px solid var(--color-hairline);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.glass-strong {
+  background: rgb(255 255 255 / 0.07);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Signature accent underline bar placed under section headings */
+.accent-bar {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--color-burgundy), var(--color-brand));
+}
+
+/* Micro label style (uppercase, tracked) */
+.micro-label {
+  @apply text-[10px] font-semibold uppercase tracking-[0.14em] text-fog;
+}
+
+/* Nav link underline that scales in from the left on hover */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 100%;
+  background: var(--color-burgundy);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* Marquee: pause on hover, faded edges */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Ambient radial glows */
+.glow-burgundy {
+  background: radial-gradient(
+    ellipse at center,
+    rgb(163 13 80 / 0.28) 0%,
+    transparent 70%
+  );
+}
+.glow-brand {
+  background: radial-gradient(
+    ellipse at center,
+    rgb(22 133 29 / 0.22) 0%,
+    transparent 70%
+  );
+}
+
+/* Subtle brand grid pattern used on hero / dark sections */
+.bg-grid-pattern {
+  background-image: linear-gradient(rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Triangle-mesh pattern band behind the contact section */
+.bg-triangles {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='104' viewBox='0 0 120 104'%3E%3Cg fill='none' stroke='%23a30d50' stroke-opacity='0.22'%3E%3Cpath d='M0 104 L60 0 L120 104 Z'/%3E%3Cpath d='M-60 104 L0 0 L60 104 Z'/%3E%3Cpath d='M60 104 L120 0 L180 104 Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 120px 104px;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee-track,
+  [class*="animate-"] {
+    animation: none !important;
+  }
 }
